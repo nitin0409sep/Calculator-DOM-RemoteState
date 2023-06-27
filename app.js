@@ -74,6 +74,9 @@ let num2 = '';   // 2nd Operand
 // Used to check whether old calculated value exists or not --> 0 means empty & 1 means old calculated value on screen
 let flag = 0;
 
+// Helping var that indicates the operator is set(changed) more then once
+let count = 0;
+
 // Functions
 
 // Operand's & Operator Clicking Event's 
@@ -108,17 +111,28 @@ function handleClickEvent(event) {
         } else if (id != null && num1 != '') { // checking for oper and also click on valid btn not else any where
 
             // oper other than '=' , 'reset & 'del'
-            if (oper.length < 1 && id != '=' && id != 'reset' && id != 'del') {
+            if (id !== '=' && id !== 'reset' && id !== 'del' && num2 === '') { // num2=''as becoz we can calc only 2 operand at a time i.e a + b || a - c || a * b || a / b... a*b+ --> Not Allowed
+
                 // oper var
                 oper = id;
 
-                // add to display div
-                display.innerHTML += id;
+                // It indicates that the operator is set(changed) more then once
+                if (count > 0) {
+                    // If the operator is changed several times
+                    let data = display.innerHTML.slice(0, -1); // copying str by removing operator present in it at last
+                    display.innerHTML = data;
+                    display.innerHTML += id;
+                } else {
+                    // add to display div
+                    display.innerHTML += id;
+                    count++;
+                }
             } else if (id === '=') {                             // oper is equal to '='
                 operation(parseInt(num1), oper, parseInt(num2));
                 num1 = '';
                 num2 = '';
                 oper = '';
+                count = 0;
             }
         }
     }
@@ -156,17 +170,30 @@ function handleKeyEvent(event) {
         } else if (id != undefined && num1 != '') { // checking for oper and also click on valid btn not else any where
 
             // oper other than '=' , 'reset & 'del'
-            if (oper.length < 1 && id == '+' || id == '-' || id == '*' || id == '/') {
+            if ((id === '+' || id === '-' || id === '*' || id === '/') && num2 === '') {
                 // oper var
                 oper = id;
 
-                // add to display div
-                display.innerHTML += id;
-            } else if (id === 'Enter') {                             // oper is equal to '='
+                // It indicates that the operator is set(changed) more then once
+                if (count > 0) {
+
+                    // If the operator is changed several times
+                    let data = display.innerHTML.slice(0, -1);    // copying str by removing operator present in it at last 
+                    display.innerHTML = data;
+                    display.innerHTML += id;
+
+                } else {
+                    // add to display div
+                    display.innerHTML += id;
+                    count++;
+                }
+
+            } else if (id === 'Enter') {        // oper is equal to '='
                 operation(parseInt(num1), oper, parseInt(num2));
                 num1 = '';
                 num2 = '';
                 oper = '';
+                count = 0;
             } else if (id === 'Backspace') {
                 deleteFunction();
             }
@@ -181,6 +208,7 @@ function resetFunction() {
     num2 = '';
     oper = '';
     flag = 0;
+    count = 0;
 }
 
 // Operation's on Operands to perform...
