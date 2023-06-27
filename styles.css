@@ -1,0 +1,91 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #2D4356;
+}
+
+h1 {
+    color: white;
+}
+
+button {
+    height: 60px;
+    width: 90px;
+    margin: 12px;
+    border: 2px solid wheat;
+    border-radius: 10px;
+    box-shadow: 0px 2px 2px 2px #FFFAD7;
+    background-color: #ECE5C7;
+    text-align: center;
+    font-size: 35px;
+}
+
+.body-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.heading {
+    margin-top: 20px;
+    margin-left: -430px;
+}
+
+.display {
+    color: white;
+    height: 120px;
+    width: 490px;
+    border-radius: 10px;
+    background-color: #001C30;
+    text-align: right;
+    line-height: 3;
+    pointer-events: none;
+}
+
+.display-text {
+    position: relative;
+    top: 15px;
+    padding: 10px;
+    font-size: 50px;
+}
+
+.main {
+    background-color: #001C30;
+    width: 450px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.div-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1px;
+}
+
+.reset {
+    width: 50%;
+    color: white;
+    background-color: #4F709C;
+    box-shadow: 0px 2px 2px 2px #4F709C;
+    border: 2px solid #4F709C;
+}
+
+.equal {
+    width: 50%;
+    color: white;
+    background-color: #F15A59;
+    box-shadow: 0px 2px 2px 2px #F15A59;
+    border: 2px solid #F15A59;
+}
+
+.del {
+    color: white;
+    background-color: #4F709C;
+    box-shadow: 0px 2px 2px 2px #4F709C;
+    border: 2px solid #4F709C;
+}
