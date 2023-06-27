@@ -66,7 +66,7 @@ const display = document.querySelector('.display-text');
 const reset = document.querySelector('.reset');
 const del = document.querySelector('.del');
 
-// variables
+// Variables
 let num1 = '';   // 1st Operand
 let oper = '';   // Operator
 let num2 = '';   // 2nd Operand
@@ -124,6 +124,56 @@ function handleClickEvent(event) {
     }
 }
 
+
+// Operand's & Operator Keyborad Event's 
+function handleKeyEvent(event) {
+
+    // Number should be inside the div, they should not cross the div
+    if (num1.length + num2.length + oper.length < 18) {
+        // We will get id of button on which ever the user will click
+        const id = event.key;
+
+        // Reset the old calculated results
+        if (flag != 0 || id == 'Escape') {
+            resetFunction();
+        }
+
+        // Checking for input digit by the user
+        if (parseInt(id) >= 0 && parseInt(id) <= 9 && id != 'Backspace') {
+            if (oper == '') {
+                // if num1 is empty then first digit in it
+                num1 += id;
+
+                // add to display div
+                display.innerHTML += id;
+            } else {
+                // if num2 is carrying any value than add in num2
+                num2 += id;
+
+                // add to display div
+                display.innerHTML += id;
+            }
+        } else if (id != undefined && num1 != '') { // checking for oper and also click on valid btn not else any where
+
+            // oper other than '=' , 'reset & 'del'
+            if (oper.length < 1 && id == '+' || id == '-' || id == '*' || id == '/') {
+                // oper var
+                oper = id;
+
+                // add to display div
+                display.innerHTML += id;
+            } else if (id === 'Enter') {                             // oper is equal to '='
+                operation(parseInt(num1), oper, parseInt(num2));
+                num1 = '';
+                num2 = '';
+                oper = '';
+            } else if (id === 'Backspace') {
+                deleteFunction();
+            }
+        }
+    }
+}
+
 // Reset Button Function
 function resetFunction() {
     display.innerHTML = '';
@@ -147,6 +197,11 @@ function operation(num1, oper, num2) {
             break;
         }
         case 'x': {
+            let mullti = num1 * num2;
+            display.innerHTML = mullti
+            break;
+        }
+        case '*': {
             let mullti = num1 * num2;
             display.innerHTML = mullti
             break;
@@ -205,6 +260,9 @@ function init() {
     // Button's i.e. Operand's & Operator Clicking Event's
     div.addEventListener('click', handleClickEvent);
 
+    // Keyboard Event's
+    document.addEventListener('keyup', handleKeyEvent)
+
     // Reset Button Event
     reset.addEventListener('click', resetFunction);
 
@@ -214,3 +272,6 @@ function init() {
 
 // Calling initaialization function
 init();
+
+
+
