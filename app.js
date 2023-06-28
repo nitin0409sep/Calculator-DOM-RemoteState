@@ -71,16 +71,20 @@ let num1 = '';   // 1st Operand
 let oper = '';   // Operator
 let num2 = '';   // 2nd Operand
 
-// Used to check whether old calculated value exists or not --> 0 means empty & 1 means old calculated value on screen
-let flag = 0;
-
 // Helping var that indicates the operator is set(changed) more then once
 let count = 0;
+let val = 0;
 
 // Functions
 
+
+
 // Operand's & Operator Clicking Event's 
 function handleClickEvent(event) {
+
+    if (display.innerHTML === '' || display.innerHTML == NaN) {
+        resetFunction();
+    }
 
     // Number should be inside the div, they should not cross the div
     if (num1.length + num2.length + oper.length < 18) {
@@ -88,20 +92,15 @@ function handleClickEvent(event) {
         // We will get id of button on which ever the user will click
         const id = event.target.getAttribute('id');
 
-        // Reset the old calculated results
-        if (flag != 0) {
-            resetFunction();
-        }
-
         // Checking for input digit by the user
         if (parseInt(id) >= 0 && parseInt(id) <= 9 && id != 'del') {
-            if (oper == '') {
+            if (oper === '' && val == 0) {
                 // if num1 is empty then first digit in it
                 num1 += id;
 
                 // add to display div
                 display.innerHTML += id;
-            } else {
+            } else if (oper !== '') {
                 // if num2 is carrying any value than add in num2
                 num2 += id;
 
@@ -129,18 +128,27 @@ function handleClickEvent(event) {
                 }
             } else if (id === '=') {                             // oper is equal to '='
                 operation(parseInt(num1), oper, parseInt(num2));
-                num1 = '';
+                num1 = display.innerHTML;//Assigning value of the display screen as num1 if user want to do further calc.
                 num2 = '';
                 oper = '';
                 count = 0;
+                val = 1;
             }
         }
     }
+
+    // Once the button is clicked then it shouldn't be left selected, as it may overide other data or generate issue in keypress by keyboard 
+    event.target.blur();
 }
 
 
 // Operand's & Operator Keyborad Event's 
 function handleKeyEvent(event) {
+
+    // If a user deletes/backspace the old output and cleared the display then the resetFunction should be called
+    if (display.innerHTML === '' || display.innerHTML == "Cannot divide by zero" || display.innerHTML == NaN) {
+        resetFunction();
+    }
 
     // Number should be inside the div, they should not cross the div
     if (num1.length + num2.length + oper.length < 18) {
@@ -148,19 +156,19 @@ function handleKeyEvent(event) {
         const id = event.key;
 
         // Reset the old calculated results
-        if (flag != 0 || id == 'Escape') {
+        if (id == 'Escape') {
             resetFunction();
         }
 
         // Checking for input digit by the user
         if (parseInt(id) >= 0 && parseInt(id) <= 9 && id != 'Backspace') {
-            if (oper == '') {
+            if (oper === '' && val === 0) {
                 // if num1 is empty then first digit in it
                 num1 += id;
 
                 // add to display div
                 display.innerHTML += id;
-            } else {
+            } else if (oper !== '') {
                 // if num2 is carrying any value than add in num2
                 num2 += id;
 
@@ -176,7 +184,6 @@ function handleKeyEvent(event) {
 
                 // It indicates that the operator is set(changed) more then once
                 if (count > 0) {
-
                     // If the operator is changed several times
                     let data = display.innerHTML.slice(0, -1);    // copying str by removing operator present in it at last 
                     display.innerHTML = data;
@@ -190,10 +197,11 @@ function handleKeyEvent(event) {
 
             } else if (id === 'Enter') {        // oper is equal to '='
                 operation(parseInt(num1), oper, parseInt(num2));
-                num1 = '';
+                num1 = display.innerHTML;  //Assigning value of the display screen as num1 if user want to do further calc.
                 num2 = '';
                 oper = '';
                 count = 0;
+                val = 1;                  // Updating val, so that we can deal with res value on display screen
             } else if (id === 'Backspace') {
                 deleteFunction();
             }
@@ -207,8 +215,8 @@ function resetFunction() {
     num1 = '';
     num2 = '';
     oper = '';
-    flag = 0;
     count = 0;
+    val = 0;
 }
 
 // Operation's on Operands to perform...
@@ -245,34 +253,34 @@ function operation(num1, oper, num2) {
             }
         }
         default: {
-            display.innerHTML = "Invalid Input";
+            display.innerHTML = display.innerHTML;
         }
     }
-
-    // Indicates that equal to button has been pressed to get result. This flag help to reset the old result.
-    flag = 1;
 }
 
 
 // Delete Button Function
 function deleteFunction() {
 
+    // If nothing on display then simply return
+    if (display.innerHTML === '' || display.innerHTML == NaN) {
+        val = 0;
+        resetFunction();
+    }
+
     // Data present on screen
     let data = display.innerHTML;
 
-    // If nothing on display then simply return
-    if (display.innerHTML === '') {
-        return;
-    }
-
     // Getting the value which is removed 
     let val = data[data.length - 1];
+
 
     // Checking the value of val, whether it belongs to num1, num2 or oper variable
     if ((val != '+' || val != '-' || val != 'x' || val != '/') && num2.length > 0) {
         num2 = num2.slice(0, -1);
     } else if (val == '+' || val == '-' || val == 'x' || val == '/') {
-        oper = oper.slice(0, -1);
+        oper = '';
+        count = 0;  // indicates that the operator has been deleted and again going to be initalized
     } else {
         num1 = num1.slice(0, -1);
     }
